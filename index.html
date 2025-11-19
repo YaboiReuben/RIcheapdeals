@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reubens and Isaacs Cheap Deals</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font import for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* Light slate background */
+        }
+        /* Style for the cheap deal tag */
+        .deal-tag {
+            background-color: #ef4444; /* Red-500 */
+            color: white;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 9999px; /* Fully rounded */
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="min-h-screen">
+        <!-- Content will be rendered here by JavaScript -->
+        <div class="flex justify-center items-center h-screen">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <p class="mt-4 text-gray-600">Loading application...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, addDoc, onSnapshot, collection, query, serverTimestamp, deleteDoc, setDoc, Timestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // IMPORTANT: Global variables are automatically provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        
+        // Custom Firebase configuration provided by the user
+        const firebaseConfig = {
+            apiKey: "AIzaSyAUm_0COJpzRzoRd-ELwZIAtNSaglzoIfU",
+            authDomain: "raicd-e94ed.firebaseapp.com",
+            projectId: "raicd-e94ed",
+            storageBucket: "raicd-e94ed.firebasestorage.app",
+            messagingSenderId: "708040718408",
+            appId: "1:708040718408:web:bff0afb9098f58dce5807d",
+            measurementId: "G-KX2FDWYH0X"
+        };
+        
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // --- Initialization ---
+        setLogLevel('Debug');
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        // Note: 'auth' is now initialized inside initializeAuth or accessed via getAuth(app) when needed by onAuthStateChanged
+        let auth = null; 
+
+        // --- Global State ---
+        let state = {
+            userId: null,
+            isAuthReady: false,
+            isStaff: false,
+            products: [],
+            currentView: 'public', // 'public', 'staff-login', 'staff-panel'
+            errorMessage: null,
+            loading: false
+        };
+
+        const staffCredentials = {
+            email: "staff@reubens.com",
+            password: "secret"
+        };
+
+        // --- Utility Functions ---
+
+        /**
+         * Safely parse a value to a number.
+         * @param {string} value 
+         * @returns {number | null}
+         */
+        function safeParseFloat(value) {
+            const num = parseFloat(value);
+            return isNaN(num) ? null : num;
+        }
+
+        /**
+         * Formats a number to currency string.
+         * @param {number} amount 
+         * @returns {string}
+         */
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+            }).format(amount);
+        }
+        
+        // --- Firebase & Auth Setup ---
+
+        // 1. Initial Authentication
+        async function initializeAuth() {
+            // Initialize Auth *after* the app to ensure configuration is loaded
+            auth = getAuth(app);
+
+            // 2. Auth State Listener setup
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    state.userId = user.uid;
+                } else {
+                    // If user somehow signs out, use a random ID as fallback for anonymous data.
+                    state.userId = crypto.randomUUID(); 
+                    state.isStaff = false; // Ensure staff status is revoked on auth change
+                }
+                // Set auth ready state here, regardless of success, to unblock the UI
+                state.isAuthReady = true; 
+                fetchProducts();
+                renderApp();
+            });
+
+
+            // 3. Attempt initial sign-in
+            if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
+                console.error("Firebase Auth initialization skipped: apiKey or authDomain missing from config.");
+                // Let onAuthStateChanged handle the final state setting
+                return;
+            }
+
+            try {
+                if (initialAuthToken) {
+                    // This is where the error often occurs if the config isn't fully ready.
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                // onAuthStateChanged will be triggered upon successful sign-in
+            } catch (error) {
+                console.error("Firebase Auth Error (Initial Attempt):", error); 
+                // Set a user-facing error message, but still let onAuthStateChanged run
+                // The anonymous sign-in in the onAuthStateChanged listener might still succeed if this fails.
+                state.errorMessage = "Could not connect to authentication service. Public deals may still load. (Error details in console)";
+                // We don't call renderApp here, as onAuthStateChanged is guaranteed to fire
+                // shortly after, whether successful or not, which will call renderApp.
+            }
+        }
+
+        // 2. Auth State Listener (Now defined and set up inside initializeAuth)
+        // onAuthStateChanged(auth, (user) => { ... });
+
+        // --- Firestore Operations ---
+
+        /**
+         * Sets up the real-time listener for the public product list.
+         */
+        function fetchProducts() {
+            if (!state.isAuthReady) return;
+
+            // Use the full public data path
+            const productCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
+            const q = query(productCollectionRef);
+
+            onSnapshot(q, (snapshot) => {
+                const newProducts = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // Ensure the timestamp field is a valid JS Date object for sorting/display
+                    const dateAdded = data.dateAdded instanceof Timestamp ? data.dateAdded.toDate() : new Date();
+                    newProducts.push({
+                        id: doc.id,
+                        ...data,
+                        dateAdded: dateAdded
+                    });
+                });
+                
+                // Sort newest first
+                state.products = newProducts.sort((a, b) => b.dateAdded - a.dateAdded);
+                renderApp();
+            }, (error) => {
+                console.error("Error fetching products:", error);
+                state.errorMessage = "Failed to load deals in real-time. (Check Firebase permissions)";
+                renderApp();
+            });
+        }
+
+        /**
+         * Adds a new product to Firestore.
+         * @param {object} productData 
+         */
+        async function addProduct(productData) {
+            if (!state.isStaff) {
+                state.errorMessage = "You must be staff to add products.";
+                renderApp();
+                return;
+            }
+
+            try {
+                const productCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
+                await addDoc(productCollectionRef, {
+                    ...productData,
+                    price: safeParseFloat(productData.price),
+                    originalPrice: safeParseFloat(productData.originalPrice),
+                    dateAdded: serverTimestamp(),
+                    staffId: state.userId
+                });
+                state.errorMessage = null; // Clear error on success
+                // Reset form (handled by the caller)
+                console.log("Product added successfully.");
+            } catch (error) {
+                console.error("Error adding product:", error);
+                state.errorMessage = "Failed to add product: " + error.message;
+            } finally {
+                state.loading = false;
+                renderApp();
+            }
+        }
+
+        /**
+         * Deletes a product from Firestore.
+         * @param {string} productId 
+         */
+        async function deleteProduct(productId) {
+            if (!state.isStaff) {
+                state.errorMessage = "You must be staff to delete products.";
+                renderApp();
+                return;
+            }
+            state.loading = true;
+            renderApp();
+
+            try {
+                const productDocRef = doc(db, `artifacts/${appId}/public/data/products`, productId);
+                await deleteDoc(productDocRef);
+                state.errorMessage = null;
+                console.log("Product deleted successfully.");
+            } catch (error) {
+                console.error("Error deleting product:", error);
+                state.errorMessage = "Failed to delete product: " + error.message;
+            } finally {
+                state.loading = false;
+                renderApp();
+            }
+        }
+
+        // --- Event Handlers & View Switching ---
+
+        function handleStaffLogin(e) {
+            e.preventDefault();
+            state.loading = true;
+            state.errorMessage = null;
+            renderApp();
+
+            const form = e.target;
+            const email = form.email.value;
+            const password = form.password.value;
+
+            if (email === staffCredentials.email && password === staffCredentials.password) {
+                state.isStaff = true;
+                state.currentView = 'staff-panel';
+                state.errorMessage = null;
+            } else {
+                state.errorMessage = "Invalid Staff Credentials.";
+            }
+
+            state.loading = false;
+            renderApp();
+        }
+
+        function handleStaffLogout() {
+            // Attempt to sign out the Firebase user if possible, though not critical for this mock login
+            if (auth) {
+                signOut(auth).catch(e => console.error("Sign out failed:", e));
+            }
+            state.isStaff = false;
+            state.currentView = 'public';
+            state.errorMessage = null;
+            renderApp();
+        }
+
+        function handleProductAdd(e) {
+            e.preventDefault();
+            if (state.loading) return;
+
+            const form = e.target;
+            const name = form.name.value.trim();
+            const price = form.price.value;
+            const originalPrice = form.originalPrice.value;
+            const description = form.description.value.trim();
+
+            if (!name || !price || !originalPrice || !description) {
+                state.errorMessage = "All fields are required.";
+                renderApp();
+                return;
+            }
+            if (safeParseFloat(price) === null || safeParseFloat(originalPrice) === null) {
+                 state.errorMessage = "Price and Original Price must be valid numbers.";
+                 renderApp();
+                 return;
+            }
+
+            state.loading = true;
+            renderApp();
+
+            addProduct({ name, price, originalPrice, description })
+                .then(() => {
+                    // Reset form on success
+                    form.reset();
+                });
+        }
+
+        // --- Rendering Components ---
+
+        /**
+         * Renders the navigation bar.
+         */
+        function renderNavbar() {
+            return `
+                <header class="bg-white shadow-lg sticky top-0 z-10">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                        <h1 class="text-3xl font-extrabold text-indigo-700 cursor-pointer" onclick="window.state.currentView = 'public'; window.renderApp();">
+                            R&I Cheap Deals
+                        </h1>
+                        <nav class="flex space-x-4 items-center">
+                            ${state.isStaff ? `
+                                <span class="text-xs font-semibold text-green-600 bg-green-100 px-3 py-1 rounded-full hidden sm:inline">Staff ID: ${state.userId}</span>
+                                <button onclick="window.state.currentView = 'staff-panel'; window.renderApp();" 
+                                    class="bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition duration-150 shadow-md">
+                                    Staff Panel
+                                </button>
+                                <button onclick="window.handleStaffLogout();" 
+                                    class="text-gray-500 hover:text-indigo-600 transition duration-150 text-sm">
+                                    Logout
+                                </button>
+                            ` : `
+                                <button onclick="window.state.currentView = 'staff-login'; window.renderApp();" 
+                                    class="text-indigo-600 border border-indigo-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-indigo-50 transition duration-150 shadow-sm">
+                                    Staff Login
+                                </button>
+                            `}
+                        </nav>
+                    </div>
+                </header>
+            `;
+        }
+
+        /**
+         * Renders the main product list view.
+         */
+        function renderPublicDeals() {
+            const productCards = state.products.length > 0
+                ? state.products.map(p => `
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 flex flex-col">
+                        <div class="flex items-start justify-between mb-4">
+                            <span class="deal-tag">Cheap Deal!</span>
+                            <span class="text-sm text-gray-400">Added: ${p.dateAdded.toLocaleDateString()}</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">${p.name}</h2>
+                        <p class="text-gray-600 mb-4 flex-grow">${p.description}</p>
+                        <div class="mt-auto">
+                            <div class="flex items-baseline space-x-3">
+                                <span class="text-4xl font-extrabold text-red-600">${formatCurrency(p.price)}</span>
+                                <span class="text-lg text-gray-400 line-through">${formatCurrency(p.originalPrice)}</span>
+                            </div>
+                            <p class="text-sm text-green-600 mt-1 font-semibold">${Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% SAVINGS!</p>
+                        </div>
+                    </div>
+                `).join('')
+                : `
+                    <div class="md:col-span-3 text-center py-12 bg-white rounded-xl shadow-inner">
+                        <p class="text-xl text-gray-500 font-medium">No cheap deals available right now. Check back soon!</p>
+                    </div>
+                `;
+
+            return `
+                <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center sm:text-left">Today's Hottest Deals 🔥</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${productCards}
+                    </div>
+                </main>
+            `;
+        }
+
+        /**
+         * Renders the staff login form.
+         */
+        function renderStaffLogin() {
+            return `
+                <main class="max-w-md mx-auto p-6 mt-16">
+                    <div class="bg-white p-8 rounded-xl shadow-2xl">
+                        <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Staff Login</h2>
+                        <p class="text-sm text-gray-500 text-center mb-6">Use: staff@reubens.com / secret</p>
+                        <form id="staff-login-form" onsubmit="window.handleStaffLogin(event)">
+                            <div class="mb-4">
+                                <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                                <input type="email" id="email" name="email" required 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                            </div>
+                            <div class="mb-6">
+                                <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                                <input type="password" id="password" name="password" required 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                            </div>
+                            <button type="submit" ${state.loading ? 'disabled' : ''}
+                                class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition duration-150 disabled:bg-indigo-400 shadow-md">
+                                ${state.loading ? 'Logging In...' : 'Log In'}
+                            </button>
+                        </form>
+                    </div>
+                </main>
+            `;
+        }
+
+        /**
+         * Renders the staff panel for adding and deleting products.
+         */
+        function renderStaffPanel() {
+            const productList = state.products.map(p => `
+                <li class="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm mb-2">
+                    <div class="flex-grow">
+                        <p class="font-semibold text-gray-800">${p.name} <span class="text-sm text-red-600">(${formatCurrency(p.price)})</span></p>
+                        <p class="text-xs text-gray-500">Original: ${formatCurrency(p.originalPrice)} | ID: ${p.id.substring(0, 6)}...</p>
+                    </div>
+                    <button onclick="window.deleteProduct('${p.id}');" ${state.loading ? 'disabled' : ''}
+                        class="ml-4 bg-red-500 text-white p-2 rounded-lg text-sm hover:bg-red-600 transition disabled:bg-gray-400">
+                        ${state.loading ? 'Wait' : 'Delete'}
+                    </button>
+                </li>
+            `).join('');
+
+            return `
+                <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-8">Staff Control Panel 🛠️</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Add New Deal Form -->
+                        <div class="bg-white p-6 rounded-xl shadow-2xl h-fit">
+                            <h3 class="text-2xl font-semibold text-indigo-700 mb-4 border-b pb-2">Add New Cheap Deal</h3>
+                            <form id="add-product-form" onsubmit="window.handleProductAdd(event)">
+                                <div class="mb-4">
+                                    <label for="name" class="block text-gray-700 font-medium mb-1">Product Name</label>
+                                    <input type="text" id="name" name="name" required 
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="originalPrice" class="block text-gray-700 font-medium mb-1">Original Price ($)</label>
+                                        <input type="number" step="0.01" id="originalPrice" name="originalPrice" required 
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label for="price" class="block text-gray-700 font-medium mb-1">Deal Price ($)</label>
+                                        <input type="number" step="0.01" id="price" name="price" required 
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                    </div>
+                                </div>
+                                <div class="mb-6">
+                                    <label for="description" class="block text-gray-700 font-medium mb-1">Description</label>
+                                    <textarea id="description" name="description" rows="3" required 
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                </div>
+                                <button type="submit" ${state.loading ? 'disabled' : ''}
+                                    class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition disabled:bg-green-400 shadow-md">
+                                    ${state.loading ? 'Adding...' : 'Add Deal to Shop'}
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Current Deals List -->
+                        <div class="bg-white p-6 rounded-xl shadow-2xl">
+                            <h3 class="text-2xl font-semibold text-indigo-700 mb-4 border-b pb-2">Currently Listed Deals (${state.products.length})</h3>
+                            <ul class="max-h-[600px] overflow-y-auto pr-2">
+                                ${productList.length > 0 ? productList : '<p class="text-gray-500 text-center py-4">No deals currently listed.</p>'}
+                            </ul>
+                            <p class="mt-4 text-xs text-gray-500 italic">User ID for uploads: ${state.userId}</p>
+                        </div>
+                    </div>
+                </main>
+            `;
+        }
+
+        /**
+         * Renders the main application view based on the current state.
+         */
+        function renderApp() {
+            const appDiv = document.getElementById('app');
+            let contentHTML = '';
+
+            if (!state.isAuthReady) {
+                 appDiv.innerHTML = `
+                    <div class="flex justify-center items-center h-screen">
+                        <div class="text-center">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                            <p class="mt-4 text-gray-600">Initializing Authentication...</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // 1. Render Navbar
+            contentHTML += renderNavbar();
+
+            // 2. Render Main Content based on view
+            if (state.currentView === 'staff-login') {
+                contentHTML += renderStaffLogin();
+            } else if (state.currentView === 'staff-panel' && state.isStaff) {
+                contentHTML += renderStaffPanel();
+            } else {
+                contentHTML += renderPublicDeals();
+            }
+
+            // 3. Render Error Message (if any)
+            if (state.errorMessage) {
+                contentHTML += `
+                    <div class="fixed top-20 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg" role="alert">
+                        <strong class="font-bold">Error:</strong>
+                        <span class="block sm:inline">${state.errorMessage}</span>
+                        <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="window.state.errorMessage = null; window.renderApp();">
+                            <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.166l-2.651 3.683a1.2 1.2 0 0 1-1.697-1.697l3.683-2.651-3.683-2.651a1.2 1.2 0 0 1 1.697-1.697l2.651 3.683 2.651-3.683a1.2 1.2 0 0 1 1.697 1.697L11.166 10l3.683 2.651a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                        </span>
+                    </div>
+                `;
+            }
+
+
+            appDiv.innerHTML = contentHTML;
+        }
+
+        // Expose functions and state to global scope for inline event handlers
+        window.state = state;
+        window.renderApp = renderApp;
+        window.handleStaffLogin = handleStaffLogin;
+        window.handleStaffLogout = handleStaffLogout;
+        window.handleProductAdd = handleProductAdd;
+        window.deleteProduct = deleteProduct;
+
+        // Start the application
+        initializeAuth();
+    </script>
+</body>
+</html>
