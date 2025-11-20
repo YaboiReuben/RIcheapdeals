@@ -1,61 +1,1491 @@
-<!DOCTYPE html>
+<!DOCTYPE null>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Down for Maintenance - Reubens and Isaacs</title>
+    <title>Reubens and Isaacs Cheap Deals</title>
+    <link rel="icon" type="image/png" href="favicon.png.png">
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom font import for a modern look (Inter, matching your original site) */
+        /* Custom font import for a modern look */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9; /* Light slate background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+        }
+        /* Custom CSS for the discount toggle switch */
+        .toggle-container {
+            position: relative;
+            width: 48px;
+            height: 28px;
+        }
+        .toggle-checkbox {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .toggle-label {
+            display: block;
+            overflow: hidden;
+            cursor: pointer;
+            height: 28px;
+            border-radius: 9999px;
+            background-color: #d1d5db; /* Gray-300 */
+            transition: background-color 0.2s ease;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #4f46e5; /* Indigo-600 */
+        }
+        .toggle-label:before {
+            content: "";
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+        .toggle-checkbox:checked + .toggle-label:before {
+            transform: translateX(20px); 
+        }
+
+        /* Color-coding for product conditions */
+        .condition-Good {
+            color: #10b981; /* Emerald-500 */
+            font-weight: 600;
+        }
+        .condition-Fair {
+            color: #f59e0b; /* Amber-500 */
+            font-weight: 600;
+        }
+        .condition-Bad {
+            color: #ef4444; /* Red-500 */
+            font-weight: 600;
+        }
+        
+        /* Style for file input button */
+        .file-input-style {
+            /* Tailwind equivalent: file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 */
         }
     </style>
 </head>
 <body>
-    <div class="max-w-xl w-full bg-white p-8 md:p-12 shadow-2xl rounded-xl text-center border-t-8 border-red-500">
-        <!-- Site Logo/Name -->
-        <div class="flex justify-center mb-6">
-            <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
+
+    <div id="app" class="min-h-screen">
+        <!-- Content will be rendered here by JavaScript -->
+        <div class="flex justify-center items-center h-screen">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <p class="mt-4 text-gray-600">Loading application...</p>
+            </div>
         </div>
-
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-4">
-            Pardon Our Dust!
-        </h1>
-
-        <h2 class="text-xl font-semibold text-red-600 mb-6">
-            Reubens and Isaacs Cheap Deals is Currently Down for Maintenance.
-        </h2>
-
-        <p class="text-gray-600 mb-8 leading-relaxed">
-            We are working hard behind the scenes to upgrade our system and bring you even better deals and an improved shopping experience. We apologize for any inconvenience this may cause.
-        </p>
-
-        <!-- Estimated Time of Return -->
-        <div class="bg-gray-100 p-6 rounded-lg border border-gray-200">
-            <p class="text-lg font-bold text-gray-800 mb-2">
-                Estimated Return Time:
-            </p>
-            <p class="text-2xl font-extrabold text-red-500">
-                10pm Wednesday ADET
-            </p>
-        </div>
-
-        <p class="text-sm text-gray-500 mt-8">
-            Please check back soon! We appreciate your patience.
-        </p>
     </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, onSnapshot, collection, query, serverTimestamp, deleteDoc, setDoc, Timestamp, setLogLevel, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // IMPORTANT: Global variables are automatically provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        
+        // Custom Firebase configuration for Firestore (Data) - Original
+        const firestoreConfig = {
+            apiKey: "AIzaSyAUm_0COJpzRzoRd-ELwZIAtNSaglzoIfU",
+            authDomain: "raicd-e94ed.firebaseapp.com",
+            projectId: "raicd-e94ed",
+            storageBucket: "raicd-e94ed.firebasestorage.app",
+            messagingSenderId: "708040718408",
+            appId: "1:708040718408:web:bff0afb9098f58dce5807d",
+            measurementId: "G-KX2FDWYH0X"
+        };
+        // Custom Firebase configuration for Authentication (Login Only) - NEW
+        const authConfig = {
+            apiKey: "AIzaSyAjKck807SLAcjYug5C-HtIsxeLJJVRA1g",
+            authDomain: "ricd-login.firebaseapp.com",
+            projectId: "ricd-login",
+            storageBucket: "ricd-login.firebasestorage.app",
+            messagingSenderId: "440300061854",
+            appId: "1:440300061854:web:ef90b7c3ab147d8942278f",
+            measurementId: "G-ZHK5S2DKKY"
+        };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Discord Webhook URL for order notifications (User provided)
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1440606078403612703/pGpNDVwEymNgxxUoAhFdZmDwT7M8pTPgnBLrGfLzoRz_soS1j7W1dkkS2IfkbyaFEHroq8ab";
+        
+        // --- System Constants ---
+        const SYSTEM_DISCOUNT_RULE = {
+            minTotal: 100.00, 
+            deduction: 10.00,
+            description: 'SAVE10 - $10 Off Orders Over $100'
+        };
+
+        const PRODUCT_CONDITIONS = ['Good', 'Fair', 'Bad'];
+        
+        // NEW: List of holiday deals for staff selection
+        const HOLIDAY_DEALS = ['None', 'Christmas Deals', 'Easter Deals', 'Black Friday Deals', 'Summer Clearance'];
+
+
+        // --- Initialization ---
+        setLogLevel('Debug');
+        
+        // Initialize two separate Firebase apps
+        const firestoreApp = initializeApp(firestoreConfig, "firestoreApp");
+        const authApp = initializeApp(authConfig, "authApp");
+        
+        const db = getFirestore(firestoreApp);
+        let auth = null;
+        
+        // --- Global State ---
+        let state = {
+            userId: null,
+            isAuthReady: false,
+            isStaff: false,
+            products: [],
+            currentView: 'public', // 'public', 'staff-login', 'staff-panel', 'checkout', 'order-success'
+            loading: false,
+            cart: [], // Stores { product: {id, name, price, stockQuantity, condition, imageUrl}, quantity: 1 }
+            rawLoadedCart: [], 
+            isCartLoaded: false, 
+            errorMessage: null,
+            successMessage: null,
+            stockNotificationMessage: null,
+            
+            // Custom Discount State
+            customDiscountEnabled: false,
+            customDiscountAmount: 0.00, // Amount set by staff in checkout
+            
+            // NEW: Temporary storage for the selected image file as Base64 string
+            newProductImageBase64: null, 
+            
+            // NEW: Active Holiday Deal (Controlled by staff, displayed on public page)
+            activeHolidayDeal: 'None', 
+        };
+        
+        const staffCredentials = {
+            email: "staff@reubens.com",
+            password: "secret"
+        };
+        
+        // --- Utility Functions ---
+        
+        /**
+         * Safely parse a value to an integer.
+         * @param {string} value 
+         * @returns {number | null}
+         */
+        function safeParseInt(value) {
+            const num = parseInt(value, 10);
+            return isNaN(num) ? null : num;
+        }
+
+        /**
+         * Safely parse a value to a number.
+         * @param {string} value 
+         * @returns {number | null}
+         */
+        function safeParseFloat(value) {
+            const num = parseFloat(value);
+            return isNaN(num) ? null : num;
+        }
+
+        /**
+         * Formats a number to currency string.
+         * @param {number} amount 
+         * @returns {string}
+         */
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+            }).format(amount);
+        }
+        
+        /**
+         * Calculates the total price of items in the cart (without discount).
+         * @returns {number}
+         */
+        function calculateCartSubtotal() {
+            return state.cart.reduce((sum, item) => sum + (item.product.price || 0) * item.quantity, 0);
+        }
+
+        /**
+         * Calculates the final total after applying custom or system conditional discount.
+         * Custom discount (if enabled) overrides the system discount.
+         * @param {number} subtotal 
+         * @returns {{finalTotal: number, discountApplied: number, isApplied: boolean, ruleDescription: string}}
+         */
+        function calculateDiscountedTotal(subtotal) {
+            let discountApplied = 0;
+            let isApplied = false;
+            let ruleDescription = 'No discount applied';
+
+            if (state.customDiscountEnabled && state.customDiscountAmount > 0) {
+                // 1. Custom Discount (Staff Override)
+                discountApplied = Math.min(state.customDiscountAmount, subtotal);
+                isApplied = true;
+                ruleDescription = `Custom Discount: ${formatCurrency(discountApplied)}`;
+            } else if (subtotal >= SYSTEM_DISCOUNT_RULE.minTotal) {
+                // 2. System Conditional Discount
+                discountApplied = Math.min(SYSTEM_DISCOUNT_RULE.deduction, subtotal);
+                isApplied = true;
+                ruleDescription = SYSTEM_DISCOUNT_RULE.description;
+            }
+
+            const finalTotal = subtotal - discountApplied;
+            return { finalTotal, discountApplied, isApplied, ruleDescription };
+        }
+
+        /**
+         * Calculates and formats the final total price of items in the cart.
+         * @returns {string}
+         */
+        function formatCartTotal() {
+            const subtotal = calculateCartSubtotal();
+            const { finalTotal } = calculateDiscountedTotal(subtotal);
+            return formatCurrency(finalTotal);
+        }
+        
+        /**
+         * Clears all system messages.
+         */
+        function clearMessages() {
+            state.errorMessage = null;
+            state.successMessage = null;
+            state.stockNotificationMessage = null;
+        }
+
+        // --- Firebase & Auth Setup ---
+
+        // 1. Initial Authentication
+        async function initializeAuth() {
+            // Get auth instance from the dedicated authApp
+            auth = getAuth(authApp);
+            
+            // 2. Auth State Listener setup
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    state.userId = user.uid;
+                } else {
+                    // If user signs out, use a random ID as fallback for anonymous data.
+                    state.userId = crypto.randomUUID(); 
+                    state.isStaff = false; // Ensure staff status is revoked on auth change
+                }
+                // Set auth ready state here, regardless of success, to unblock the UI
+                state.isAuthReady = true; 
+
+                // NEW: Load cart right after user is identified
+                if (!state.isCartLoaded) { 
+                    loadCartFromFirestore();
+                }
+
+                fetchProducts();
+                fetchSettings(); // Fetch public settings
+                renderApp();
+            });
+            
+            // 3. Attempt initial sign-in
+            if (!authConfig.apiKey || !authConfig.authDomain) {
+                console.error("Firebase Auth initialization skipped: apiKey or authDomain missing from auth config.");
+                return;
+            }
+
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Firebase Auth Error (Initial Attempt):", error);
+            }
+        }
+
+        // --- Firestore Settings ---
+        
+        /**
+         * Fetches and listens for real-time updates on public settings (like the holiday banner).
+         */
+        function fetchSettings() {
+            if (!state.isAuthReady) return;
+
+            // Public data path: artifacts/{appId}/public/data/settings/holiday_banner
+            const settingsDocRef = doc(db, `artifacts/${appId}/public/data/settings/holiday_banner`);
+            
+            onSnapshot(settingsDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    state.activeHolidayDeal = data.dealName || 'None';
+                    // Trigger a re-render because the banner status changed
+                    renderApp();
+                }
+            }, (error) => {
+                console.error("Error fetching settings:", error);
+                // We'll proceed even if settings fail, defaulting to 'None'
+                renderApp();
+            });
+        }
+
+        // --- Firestore Cart Persistence ---
+
+        /**
+         * Returns the Firestore document reference for the current user's cart.
+         */
+        function getCartDocRef() {
+            const userId = auth.currentUser?.uid || state.userId; // Use authenticated UID if available
+            if (!userId || !db) return null;
+            // Private user path: artifacts/{appId}/users/{userId}/cart/currentCart
+            return doc(db, `artifacts/${appId}/users/${userId}/cart/currentCart`);
+        }
+
+        /**
+         * Loads the user's cart from Firestore once authentication is ready.
+         */
+        function loadCartFromFirestore() {
+            if (!state.isAuthReady || state.isCartLoaded) return;
+            const cartDocRef = getCartDocRef();
+            if (!cartDocRef) return;
+
+            // Use onSnapshot for real-time updates to the cart
+            onSnapshot(cartDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const cartData = docSnap.data().items;
+                    // Store the raw loaded data. Reconciliation will happen after products are loaded.
+                    state.rawLoadedCart = cartData || []; 
+                } else {
+                    state.rawLoadedCart = [];
+                }
+                
+                state.isCartLoaded = true;
+                reconcileCartAndProducts(); // Reconcile every time cart or products change
+            }, (error) => {
+                console.error("Error fetching cart:", error);
+                state.errorMessage = "Failed to load your saved cart.";
+                renderApp();
+            });
+        }
+        
+        /**
+         * Saves the current cart state to Firestore.
+         */
+        async function saveCartToFirestore() {
+            if (!state.isAuthReady || !state.userId) return;
+            const cartDocRef = getCartDocRef();
+            if (!cartDocRef) return;
+
+            // Only save ID and Quantity to keep the document small and prevent price/name sync issues.
+            const serializableCart = state.cart.map(item => ({
+                id: item.product.id,
+                quantity: item.quantity
+            }));
+
+            try {
+                await setDoc(cartDocRef, { items: serializableCart, timestamp: serverTimestamp() });
+                // console.log("Cart saved successfully.");
+            } catch (error) {
+                console.error("Error saving cart:", error);
+                // state.errorMessage = "Failed to save cart state.";
+                // renderApp();
+            }
+        }
+
+
+        // --- Firestore Products & Inventory ---
+
+        /**
+         * Fetches and listens for real-time updates on all products.
+         */
+        function fetchProducts() {
+            if (!state.isAuthReady) return;
+
+            // Public data path: artifacts/{appId}/public/data/products
+            const productsColRef = collection(db, `artifacts/${appId}/public/data/products`);
+            
+            onSnapshot(productsColRef, (snapshot) => {
+                state.products = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    // Ensure mandatory fields exist and are correctly typed
+                    const price = safeParseFloat(data.price);
+                    const stock = safeParseInt(data.stockQuantity);
+                    const condition = PRODUCT_CONDITIONS.includes(data.condition) ? data.condition : 'Fair'; // Validate condition
+                    // The image URL might be a long Base64 string or a short external URL.
+                    const defaultPlaceholder = `https://placehold.co/200x200/4f46e5/ffffff?text=${encodeURIComponent(data.name.split(' ')[0] || 'Item')}`;
+                    const imageUrl = data.imageUrl || defaultPlaceholder; 
+
+                    if (data.name && price !== null && stock !== null) {
+                        state.products.push({
+                            id: doc.id,
+                            name: data.name,
+                            description: data.description || 'No description available.',
+                            price: price,
+                            stockQuantity: stock,
+                            condition: condition, 
+                            imageUrl: imageUrl, 
+                        });
+                    }
+                });
+                // Once products are updated, reconcile the cart
+                reconcileCartAndProducts(); 
+                renderApp();
+            }, (error) => {
+                console.error("Error fetching products:", error);
+                state.errorMessage = "Failed to load product list.";
+                renderApp();
+            });
+        }
+
+        /**
+         * Reconciles the cart items (from Firestore) with the latest product data (from Firestore).
+         * This ensures correct names, prices, and stock checks are performed.
+         */
+        function reconcileCartAndProducts() {
+            if (!state.isAuthReady || !state.isCartLoaded) return;
+            
+            const newCart = [];
+            let stockMessage = null;
+
+            state.rawLoadedCart.forEach(rawItem => {
+                const product = state.products.find(p => p.id === rawItem.id);
+                
+                if (product) {
+                    let quantity = rawItem.quantity;
+
+                    if (quantity > product.stockQuantity) {
+                        // Stock Reconciliation: Reduce quantity to available stock
+                        quantity = product.stockQuantity;
+                        stockMessage = `Warning: The quantity of '${product.name}' was reduced to ${quantity} due to low stock.`;
+                    }
+                    
+                    if (quantity > 0) {
+                        newCart.push({ product, quantity });
+                    }
+                }
+            });
+
+            state.cart = newCart;
+            state.stockNotificationMessage = stockMessage;
+            
+            // If any reconciliation happened, save the new cart state
+            if (stockMessage) {
+                saveCartToFirestore(); 
+            }
+            renderApp();
+        }
+        
+        /**
+         * Executes the checkout process using a Firestore Transaction to safely update stock.
+         * @param {string} fullName 
+         * @param {string} email 
+         * @param {string} totalAmount
+         * @param {Array} items
+         * @param {string} subtotal
+         * @param {string} discountApplied
+         * @param {string} discountRule
+         * @param {string} userId
+         */
+        async function processOrderTransaction(fullName, email, totalAmount, items, subtotal, discountApplied, discountRule, userId) {
+            state.loading = true;
+            renderApp();
+
+            try {
+                const finalOrderDetails = await runTransaction(db, async (transaction) => {
+                    const productUpdates = [];
+                    const orderItems = [];
+                    
+                    for (const cartItem of items) {
+                        // 1. Get the current product document reference
+                        const productRef = doc(db, `artifacts/${appId}/public/data/products`, cartItem.id);
+                        const productDoc = await transaction.get(productRef);
+
+                        if (!productDoc.exists()) {
+                            throw new Error(`Product not found: ${cartItem.name}`);
+                        }
+
+                        const currentStock = productDoc.data().stockQuantity;
+                        const quantityToBuy = cartItem.quantity;
+
+                        if (currentStock < quantityToBuy) {
+                            throw new Error(`Insufficient stock for ${cartItem.name}. Only ${currentStock} remaining.`);
+                        }
+
+                        // 2. Calculate new stock
+                        const newStock = currentStock - quantityToBuy;
+                        
+                        // 3. Update the stock within the transaction
+                        transaction.update(productRef, { stockQuantity: newStock });
+
+                        orderItems.push({
+                            id: cartItem.id,
+                            name: cartItem.name,
+                            price: cartItem.price,
+                            quantity: quantityToBuy,
+                            condition: cartItem.product.condition, // Include condition
+                            originalStock: currentStock
+                        });
+                        productUpdates.push({ id: cartItem.id, newStock: newStock });
+                    }
+
+                    // 4. Create the final order object
+                    const orderPayload = {
+                        fullName,
+                        email,
+                        subtotal,
+                        discountApplied,
+                        discountRule,
+                        totalAmount,
+                        items: orderItems,
+                        timestamp: serverTimestamp(),
+                        userId,
+                        status: 'Pending'
+                    };
+
+                    // 5. Add the new order document (Private path for orders)
+                    const ordersColRef = collection(db, `artifacts/${appId}/users/${userId}/orders`);
+                    await transaction.set(doc(ordersColRef), orderPayload);
+
+                    // 6. Clear the user's cart document
+                    const cartDocRef = getCartDocRef();
+                    if (cartDocRef) {
+                         // Set to an empty object to clear the contents
+                        transaction.set(cartDocRef, { items: [], timestamp: serverTimestamp() });
+                    }
+
+                    return orderPayload; // Return the full order details for webhook/success message
+                });
+
+                // Post-transaction success actions
+                state.cart = [];
+                state.rawLoadedCart = []; // Clear local state after successful transaction commit
+                state.successMessage = `Order placed successfully! Total charged: ${finalOrderDetails.totalAmount}. Check your email for confirmation.`;
+                await sendDiscordNotification(finalOrderDetails);
+                state.currentView = 'order-success';
+
+            } catch (error) {
+                console.error("Order Transaction Failed:", error);
+                state.errorMessage = error.message.includes('stock') 
+                    ? `Order failed: ${error.message}. Please adjust your cart.` 
+                    : "An unexpected error occurred during checkout. Please try again.";
+            } finally {
+                state.loading = false;
+                // Reset custom discount state after checkout, successful or not
+                state.customDiscountEnabled = false;
+                state.customDiscountAmount = 0.00;
+                renderApp();
+            }
+        }
+
+
+        // --- Discord Webhook Notification ---
+
+        /**
+         * Sends a notification to a Discord channel about the new order.
+         * @param {Object} orderDetails 
+         */
+        async function sendDiscordNotification(orderDetails) {
+            if (!DISCORD_WEBHOOK_URL) {
+                console.warn("DISCORD_WEBHOOK_URL is not set. Skipping notification.");
+                return;
+            }
+
+            const itemDescriptions = orderDetails.items.map(item => 
+                `• ${item.name} x${item.quantity} (${formatCurrency(item.price)} each) [Condition: ${item.condition}]`
+            ).join('\n');
+
+            const webhookPayload = {
+                username: "Reubens & Isaacs Order Bot",
+                avatar_url: "https://placehold.co/128x128/4f46e5/ffffff?text=RI",
+                embeds: [{
+                    title: `🛒 NEW ORDER RECEIVED! #${Date.now().toString().slice(-6)}`,
+                    description: itemDescriptions,
+                    color: 5126805, // Indigo color
+                    fields: [
+                        { name: "👤 Customer Name", value: orderDetails.fullName, inline: true },
+                        { name: "📧 Email", value: orderDetails.email, inline: true },
+                        { name: "💵 Subtotal", value: orderDetails.subtotal, inline: true },
+                        { name: "📉 Discount", value: orderDetails.discountApplied, inline: true },
+                        { name: "💰 Total Amount", value: orderDetails.totalAmount, inline: true },
+                        { name: "Date/Time", value: `<t:${Math.floor(Timestamp.now().seconds)}:f>`, inline: true },
+                    ],
+                    footer: {
+                        text: `Rule: ${orderDetails.discountRule} | User ID: ${orderDetails.userId}`
+                    }
+                }]
+            };
+
+            try {
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(webhookPayload)
+                });
+            } catch (error) {
+                console.error("Failed to send Discord notification:", error);
+            }
+        }
+
+
+        // --- Component Rendering Functions ---
+
+        /**
+         * Renders the header and navigation.
+         */
+        function renderHeader() {
+            const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalAmount = formatCartTotal();
+            
+            const staffButton = state.isStaff 
+                ? `<button onclick="window.handleStaffLogout()" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-200">Staff Logout</button>`
+                : `<button onclick="window.changeView('staff-login')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition duration-200">Staff Login</button>`;
+
+            return `
+                <header class="fixed top-0 left-0 w-full bg-white shadow-md z-10">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                        <!-- Logo/Title -->
+                        <h1 class="text-3xl font-extrabold text-gray-900 cursor-pointer" onclick="window.changeView('public')">
+                            <span class="text-indigo-600">Reubens</span> & <span class="text-red-500">Isaacs</span>
+                        </h1>
+                        
+                        <!-- Navigation and Cart -->
+                        <nav class="flex items-center space-x-6">
+                            ${state.currentView !== 'public' ? `<button onclick="window.changeView('public')" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-200">Deals</button>` : ''}
+                            
+                            <!-- Cart Summary -->
+                            <button onclick="window.changeView('checkout')" class="relative flex items-center space-x-2 p-2 bg-indigo-100 text-indigo-700 rounded-xl shadow-inner hover:bg-indigo-200 transition duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l3 11h11l3-7H6M7 13h10M6 21a1 1 0 100 2 1 1 0 000-2zm12 0a1 1 0 100 2 1 1 0 000-2z" />
+                                </svg>
+                                <span class="text-sm font-semibold hidden sm:inline">
+                                    ${totalItems} Item(s)
+                                </span>
+                                <span class="text-sm font-bold text-red-600">
+                                    ${totalAmount}
+                                </span>
+                                ${totalItems > 0 ? `<span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">${totalItems}</span>` : ''}
+                            </button>
+                            
+                            ${staffButton}
+                        </nav>
+                    </div>
+                </header>
+            `;
+        }
+
+        /**
+         * Renders the main public deals page.
+         */
+        function renderPublicDeals() {
+            // No more distinction between featured and other products
+            const availableProducts = state.products.filter(p => p.stockQuantity > 0);
+            
+            const productCard = (product) => {
+                const cartItem = state.cart.find(item => item.product.id === product.id);
+                const currentCartQuantity = cartItem ? cartItem.quantity : 0;
+                const canAddMore = product.stockQuantity > currentCartQuantity;
+
+                return `
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between">
+                        <!-- Product Image -->
+                        <div class="mb-4 aspect-square rounded-lg overflow-hidden border border-gray-200">
+                            <img src="${product.imageUrl}" alt="Image of ${product.name}" 
+                                class="w-full h-full object-cover" 
+                                onerror="this.onerror=null; this.src='https://placehold.co/200x200/4f46e5/ffffff?text=${encodeURIComponent(product.name.split(' ')[0] || 'Item')}';"
+                            >
+                        </div>
+                        
+                        <div>
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">${product.name}</h3>
+                                <span class="text-sm condition-${product.condition}">${product.condition}</span>
+                            </div>
+                            <p class="text-2xl font-extrabold text-indigo-600 mb-2">${formatCurrency(product.price)}</p>
+                            <p class="text-gray-600 mb-4 text-sm">${product.description}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-xs font-semibold ${product.stockQuantity <= 5 ? 'text-red-500' : 'text-green-600'} mb-3">
+                                ${product.stockQuantity} in Stock ${product.stockQuantity <= 5 ? '(Low Stock!)' : ''}
+                            </p>
+
+                            <div class="flex items-center space-x-2">
+                                <button 
+                                    onclick="window.handleRemoveFromCart('${product.id}')" 
+                                    class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition duration-150 disabled:opacity-50"
+                                    ${currentCartQuantity === 0 ? 'disabled' : ''}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                                </button>
+
+                                <span class="px-3 py-1 font-bold text-gray-800 bg-gray-100 rounded-md">${currentCartQuantity}</span>
+                                
+                                <button 
+                                    onclick="window.handleAddToCart('${product.id}')" 
+                                    class="flex-grow p-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    ${!canAddMore ? 'disabled' : ''}
+                                >
+                                    ${canAddMore ? 'Add to Cart' : 'Max Qty'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+
+            return `
+                <main class="max-w-7xl mx-auto p-6 mt-20">
+                    <h2 class="text-4xl font-extrabold text-indigo-700 mb-8 border-b pb-4">All Available Cheap Deals</h2>
+
+                    <!-- NEW: Holiday Banner Display -->
+                    ${state.activeHolidayDeal !== 'None' ? 
+                        `<div class="bg-red-500 text-white p-4 rounded-xl shadow-2xl mb-8 text-center animate-pulse">
+                            <p class="text-2xl font-extrabold tracking-wider">
+                                🎁 ${state.activeHolidayDeal.toUpperCase()}! 🏷️
+                            </p>
+                            <p class="text-sm font-medium mt-1">
+                                Check out the deals below before they're gone!
+                            </p>
+                        </div>` : ''
+                    }
+
+                    ${availableProducts.length > 0 ? 
+                        `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            ${availableProducts.map(productCard).join('')}
+                        </div>` : 
+                        `<p class="text-gray-500 text-lg">No items currently in stock. Check back soon!</p>`
+                    }
+                </main>
+            `;
+        }
+
+        /**
+         * Renders the staff login form.
+         */
+        function renderStaffLogin() {
+            return `
+                <main class="max-w-md mx-auto p-6 mt-24 bg-white rounded-xl shadow-2xl">
+                    <h2 class="text-3xl font-bold text-indigo-700 mb-6 border-b pb-3">Staff Login</h2>
+                    <p class="text-sm text-gray-500 mb-4">Use email: ${staffCredentials.email} and password: ${staffCredentials.password}</p>
+                    <form onsubmit="window.handleStaffLogin(event)" class="space-y-4">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" name="email" value="${staffCredentials.email}" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="password" name="password" value="${staffCredentials.password}" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200">
+                            Log In
+                        </button>
+                    </form>
+                </main>
+            `;
+        }
+        
+        /**
+         * Renders the staff panel for adding/managing products.
+         */
+        function renderStaffPanel() {
+            const productRow = (product) => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                        <img src="${product.imageUrl}" alt="Product image" class="h-8 w-8 object-cover rounded mr-3 inline-block" 
+                            onerror="this.onerror=null; this.src='https://placehold.co/32x32/4f46e5/ffffff?text=RI';"
+                        >
+                        ${product.name}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">${formatCurrency(product.price)}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">${product.stockQuantity}</td>
+                    <td class="px-6 py-4 text-sm condition-${product.condition}">${product.condition}</td>
+                    <td class="px-6 py-4 text-sm font-medium">
+                        <button onclick="window.deleteProduct('${product.id}')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                    </td>
+                </tr>
+            `;
+
+            return `
+                <main class="max-w-7xl mx-auto p-6 mt-20">
+                    <h2 class="text-4xl font-extrabold text-green-700 mb-8 border-b pb-4">Staff Product Management</h2>
+
+                    <!-- NEW: Holiday Banner Management -->
+                    <div class="bg-indigo-50 p-6 rounded-xl shadow-xl mb-10 border border-indigo-200">
+                        <h3 class="text-2xl font-bold text-indigo-700 mb-4">Holiday Banner Management</h3>
+                        <p class="text-gray-600 mb-4">Select the deal to feature prominently on the public homepage.</p>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <label for="holidayDealSelect" class="font-medium text-gray-700">Active Deal:</label>
+                            <select id="holidayDealSelect" onchange="window.handleHolidayDealChange(event)" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 flex-grow">
+                                ${HOLIDAY_DEALS.map(deal => 
+                                    `<option value="${deal}" ${deal === state.activeHolidayDeal ? 'selected' : ''}>${deal}</option>`
+                                ).join('')}
+                            </select>
+                            <span class="font-bold text-lg sm:text-xl p-2 rounded-lg ${state.activeHolidayDeal === 'None' ? 'text-gray-500 bg-gray-100' : 'text-red-800 bg-red-200'}">
+                                CURRENT: ${state.activeHolidayDeal}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Add New Product Form -->
+                    <div class="bg-white p-6 rounded-xl shadow-xl mb-10">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Add New Product</h3>
+                        <form onsubmit="window.handleProductAdd(event)" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            
+                            <input type="text" name="name" placeholder="Name (e.g., Laptop)" required class="col-span-2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                            <input type="number" step="0.01" name="price" placeholder="Price (e.g., 99.99)" required class="col-span-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                            <input type="number" name="stockQuantity" placeholder="Stock (e.g., 50)" required class="col-span-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
+                            
+                            <textarea name="description" placeholder="Short Description" class="md:col-span-4 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+
+                            <!-- UPDATED: File Upload and Preview -->
+                            <div class="md:col-span-2 space-y-2">
+                                <label for="productImageFile" class="block text-sm font-medium text-gray-700">Product Image (Max 700KB)</label>
+                                <input type="file" id="productImageFile" name="imageFile" accept="image/*" onchange="window.handleImageChange(event)" class="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
+                                <!-- Image Preview -->
+                                ${state.newProductImageBase64 ? 
+                                    `<div class="mt-2 p-2 border border-indigo-200 rounded-lg">
+                                        <p class="text-xs text-indigo-700 mb-1 font-medium">Image Preview:</p>
+                                        <img src="${state.newProductImageBase64}" alt="Selected Image Preview" class="w-24 h-24 object-cover rounded-md shadow-md"/>
+                                    </div>` : 
+                                    `<p class="text-xs text-gray-500 mt-1">No image selected. A default placeholder will be used.</p>`}
+                            </div>
+                            
+                            <div class="md:col-span-1">
+                                <label for="condition" class="sr-only">Condition</label>
+                                <select id="condition" name="condition" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="Good">Condition: Good</option>
+                                    <option value="Fair" selected>Condition: Fair</option>
+                                    <option value="Bad">Condition: Bad</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="md:col-span-1 py-2 px-4 rounded-lg text-white font-semibold bg-green-600 hover:bg-green-700 transition duration-200 shadow-md" ${state.loading ? 'disabled' : ''}>
+                                ${state.loading ? 'Adding...' : 'Add Product'}
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Product List Table -->
+                    <div class="bg-white shadow-xl overflow-hidden sm:rounded-lg">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
+                                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Delete</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    ${state.products.map(productRow).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            `;
+        }
+
+        /**
+         * Renders the checkout form.
+         */
+        function renderCheckoutForm() {
+            if (state.cart.length === 0) {
+                return `
+                    <main class="max-w-xl mx-auto p-6 mt-16 bg-white rounded-xl shadow-2xl text-center">
+                        <h2 class="text-3xl font-bold text-indigo-700 mb-6 border-b pb-3">Your Cart is Empty</h2>
+                        <p class="text-gray-600 mb-6">Looks like you haven't added any cheap deals yet!</p>
+                        <button onclick="window.changeView('public')" class="py-3 px-6 rounded-lg text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition duration-200 shadow-md">
+                            Start Shopping
+                        </button>
+                    </main>
+                `;
+            }
+
+            const cartItemsList = state.cart.map(item => `
+                <li class="flex justify-between py-2 border-b border-gray-100 items-center">
+                    <div>
+                        <span class="text-gray-700 font-medium">${item.product.name} (x${item.quantity})</span>
+                        <p class="text-xs ${item.product.stockQuantity <= item.quantity ? 'text-red-500' : 'text-gray-400'}">
+                            Condition: <span class="condition-${item.product.condition}">${item.product.condition}</span>
+                        </p>
+                    </div>
+                    <span class="text-gray-800">${formatCurrency(item.product.price * item.quantity)}</span>
+                </li>
+            `).join('');
+
+            const subtotal = calculateCartSubtotal();
+            const { finalTotal, discountApplied, isApplied, ruleDescription } = calculateDiscountedTotal(subtotal);
+            const amountToSave = SYSTEM_DISCOUNT_RULE.minTotal - subtotal;
+            const isCustom = state.customDiscountEnabled && isApplied && ruleDescription.startsWith('Custom');
+
+            // Conditional Discount Display
+            let discountHtml = '';
+            if (isApplied) {
+                discountHtml = `
+                    <li class="flex justify-between py-1 text-green-700 font-bold ${isCustom ? 'border-t border-green-200 mt-2' : ''}">
+                        <span>${ruleDescription}</span>
+                        <span>-${formatCurrency(discountApplied)}</span>
+                    </li>
+                `;
+            } else if (!state.customDiscountEnabled) {
+                discountHtml = `
+                    <li class="flex justify-between py-1 text-red-500 text-sm italic">
+                        <span>Spend ${formatCurrency(amountToSave)} more for ${formatCurrency(SYSTEM_DISCOUNT_RULE.deduction)} off!</span>
+                    </li>
+                `;
+            }
+            
+            const totalHtml = `
+                <div class="flex justify-between items-center pt-2 border-t border-indigo-200 mt-2">
+                    <span class="text-lg font-bold text-gray-800">Final Total:</span>
+                    <span class="text-2xl font-extrabold text-red-600">${formatCurrency(finalTotal)}</span>
+                </div>
+            `;
+            
+            // Custom Discount Panel (Staff Access)
+            const customDiscountPanel = state.isStaff ? `
+                <div class="bg-yellow-50 p-4 rounded-lg mb-6 border border-yellow-200">
+                    <h3 class="text-xl font-semibold text-yellow-800 mb-2">Staff Custom Discount</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="customDiscountToggle" class="font-medium text-gray-700">Enable Custom Discount</label>
+                        <div class="toggle-container">
+                            <input type="checkbox" id="customDiscountToggle" class="toggle-checkbox" 
+                                onchange="window.handleCustomDiscountToggle(event)" 
+                                ${state.customDiscountEnabled ? 'checked' : ''}
+                            />
+                            <label for="customDiscountToggle" class="toggle-label"></label>
+                        </div>
+                    </div>
+
+                    <div class="${state.customDiscountEnabled ? 'block' : 'hidden'}">
+                        <label for="customDiscountAmount" class="block text-sm font-medium text-gray-700 mb-2">Discount Amount ($)</label>
+                        <input type="number" step="0.01" id="customDiscountAmount" 
+                            value="${state.customDiscountAmount.toFixed(2)}"
+                            oninput="window.handleCustomDiscountChange(event)"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500"
+                        />
+                        <p class="text-xs mt-1 text-yellow-700">This overrides the standard $10 off rule.</p>
+                    </div>
+                </div>
+            ` : '';
+
+
+            return `
+                <main class="max-w-xl mx-auto p-6 mt-16 bg-white rounded-xl shadow-2xl">
+                    <h2 class="text-3xl font-bold text-indigo-700 mb-6 border-b pb-3">Checkout</h2>
+                    
+                    ${customDiscountPanel}
+
+                    <!-- Order Summary -->
+                    <div class="bg-indigo-50 p-4 rounded-lg mb-6 border border-indigo-200">
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">Order Summary</h3>
+                        <ul class="mb-2">
+                            ${cartItemsList} 
+                            <li class="flex justify-between py-1 border-t border-gray-200 mt-2">
+                                <span class="text-gray-700 font-medium">Subtotal:</span>
+                                <span class="text-gray-800">${formatCurrency(subtotal)}</span>
+                            </li>
+                            ${discountHtml}
+                        </ul>
+                        ${totalHtml}
+                    </div>
+                    <form id="checkout-form" onsubmit="window.handleCheckoutSubmit(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                                <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-sm text-yellow-800 font-medium">
+                                Payment: Cash on Delivery/Pickup only. No online payments supported yet.
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                            class="w-full py-3 mt-6 px-4 border border-transparent rounded-lg shadow-lg text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 disabled:opacity-50"
+                            ${state.loading ? 'disabled' : ''}
+                        >
+                            ${state.loading ? 'Processing Order...' : 'Place Order'}
+                        </button>
+                    </form>
+                </main>
+            `;
+        }
+        
+        /**
+         * Renders the order success confirmation screen.
+         */
+        function renderOrderSuccess() {
+            return `
+                <main class="max-w-xl mx-auto p-6 mt-24 bg-white rounded-xl shadow-2xl text-center">
+                    <div class="text-green-500 mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold text-green-700 mb-4">Order Confirmed!</h2>
+                    <p class="text-gray-600 mb-6">Thank you for your purchase. We've received your order and will contact you shortly to confirm payment (cash only) and pickup/delivery details.</p>
+                    <p class="text-lg font-semibold text-gray-800 mb-8">${state.successMessage}</p>
+                    <button onclick="window.changeView('public')" class="py-3 px-6 rounded-lg text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition duration-200 shadow-md">
+                        Back to Deals
+                    </button>
+                </main>
+            `;
+        }
+
+        /**
+         * Renders system messages (error/success/stock).
+         */
+        function renderMessages() {
+            let html = '';
+            
+            if (state.errorMessage) {
+                html += `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative mb-4" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline"> ${state.errorMessage}</span>
+                </div>`;
+            }
+            if (state.successMessage && state.currentView !== 'order-success') {
+                 html += `<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative mb-4" role="alert">
+                    <strong class="font-bold">Success!</strong>
+                    <span class="block sm:inline"> ${state.successMessage}</span>
+                </div>`;
+            }
+             if (state.stockNotificationMessage) {
+                 html += `<div class="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-xl relative mb-4" role="alert">
+                    <strong class="font-bold">Heads Up!</strong>
+                    <span class="block sm:inline"> ${state.stockNotificationMessage}</span>
+                </div>`;
+            }
+
+            return html;
+        }
+
+        // --- Event Handlers (Global Scope) ---
+
+        /**
+         * Handles the file input change, converting the selected image to a Base64 string.
+         * @param {Event} e 
+         */
+        window.handleImageChange = function(e) {
+            clearMessages();
+            state.newProductImageBase64 = null; // Clear previous state
+            const file = e.target.files[0];
+            
+            if (!file) {
+                renderApp();
+                return;
+            }
+
+            // Maximum size is about 700KB to ensure Base64 string stays well under the 1MB Firestore limit
+            const MAX_FILE_SIZE_BYTES = 700 * 1024; 
+
+            if (file.size > MAX_FILE_SIZE_BYTES) {
+                state.errorMessage = `Image too large. Max file size is ${Math.floor(MAX_FILE_SIZE_BYTES / 1024)}KB.`;
+                e.target.value = ''; // Clear file input
+                renderApp();
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                 state.errorMessage = `Invalid file type. Please select an image.`;
+                 e.target.value = ''; 
+                 renderApp();
+                 return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // reader.result will be the Base64 data URL string (e.g., data:image/jpeg;base64,...)
+                state.newProductImageBase64 = reader.result;
+                renderApp();
+            };
+            reader.onerror = () => {
+                state.errorMessage = "Failed to read image file.";
+                renderApp();
+            };
+            
+            reader.readAsDataURL(file);
+        };
+
+
+        /**
+         * Changes the current view and clears non-persistent messages.
+         * @param {string} viewName 
+         */
+        window.changeView = function(viewName) {
+            clearMessages();
+            state.currentView = viewName;
+            // Clear success message on navigation away from success screen
+            if (viewName !== 'order-success') {
+                state.successMessage = null;
+            }
+            renderApp();
+        };
+
+        /**
+         * Handles staff login form submission.
+         */
+        window.handleStaffLogin = async function(e) {
+            e.preventDefault();
+            clearMessages();
+            state.loading = true;
+            renderApp();
+
+            const form = e.target;
+            const email = form.email.value;
+            const password = form.password.value;
+
+            if (email === staffCredentials.email && password === staffCredentials.password) {
+                state.isStaff = true;
+                state.currentView = 'staff-panel';
+                state.successMessage = "Staff login successful!";
+            } else {
+                state.errorMessage = "Invalid staff credentials.";
+            }
+
+            state.loading = false;
+            renderApp();
+        };
+
+        /**
+         * Handles staff logout.
+         */
+        window.handleStaffLogout = async function() {
+            clearMessages();
+            state.loading = true;
+            renderApp();
+
+            try {
+                // Attempt to sign out from the dedicated auth app
+                await signOut(auth);
+            } catch (error) {
+                console.error("Logout failed:", error);
+            }
+
+            // Reset local staff state regardless of auth outcome
+            state.isStaff = false;
+            state.currentView = 'public';
+            state.successMessage = "Logged out successfully.";
+            state.loading = false;
+            renderApp();
+        };
+
+        /**
+         * Saves the selected holiday deal to Firestore.
+         * @param {string} dealName 
+         */
+        window.updateHolidayBanner = async function(dealName) {
+            if (!state.isStaff || state.loading) return;
+            
+            clearMessages();
+            state.loading = true;
+            renderApp();
+
+            // Public data path: artifacts/{appId}/public/data/settings/holiday_banner
+            const settingsDocRef = doc(db, `artifacts/${appId}/public/data/settings/holiday_banner`);
+
+            try {
+                await setDoc(settingsDocRef, { 
+                    dealName: dealName,
+                    updatedAt: serverTimestamp(),
+                    updatedBy: state.userId
+                }, { merge: true });
+                
+                // State update will be handled by the onSnapshot listener in fetchSettings
+                state.successMessage = `Holiday banner set to: ${dealName}`;
+            } catch (error) {
+                console.error("Error updating holiday banner:", error);
+                state.errorMessage = "Failed to update holiday banner settings.";
+            }
+
+            state.loading = false;
+            renderApp();
+        };
+
+        /**
+         * Handles the holiday deal select box change.
+         * @param {Event} e 
+         */
+        window.handleHolidayDealChange = function(e) {
+            window.updateHolidayBanner(e.target.value);
+        };
+
+        /**
+         * Handles new product addition form submission.
+         */
+        window.handleProductAdd = async function(e) {
+            e.preventDefault();
+            if (!state.isStaff) return;
+            clearMessages();
+            state.loading = true;
+            renderApp();
+
+            const form = e.target;
+            const productName = form.name.value;
+            
+            // Determine the image source: Base64 or a placeholder URL
+            const finalImageUrl = state.newProductImageBase64 || 
+                                  `https://placehold.co/200x200/4f46e5/ffffff?text=${encodeURIComponent(productName.split(' ')[0] || 'Item')}`;
+
+
+            const newProduct = {
+                name: productName,
+                description: form.description.value,
+                price: safeParseFloat(form.price.value),
+                stockQuantity: safeParseInt(form.stockQuantity.value),
+                condition: form.condition.value, 
+                imageUrl: finalImageUrl, // Use Base64 or placeholder
+                createdAt: serverTimestamp()
+            };
+
+            if (newProduct.name && newProduct.price !== null && newProduct.stockQuantity !== null && PRODUCT_CONDITIONS.includes(newProduct.condition)) {
+                 // Public data path: artifacts/{appId}/public/data/products
+                const productsColRef = collection(db, `artifacts/${appId}/public/data/products`);
+                try {
+                    await addDoc(productsColRef, newProduct);
+                    state.successMessage = `Product '${newProduct.name}' added successfully.`;
+                    form.reset();
+                    
+                    // Clear temporary image state and file input element
+                    state.newProductImageBase64 = null; 
+                    const fileInput = document.getElementById('productImageFile');
+                    if (fileInput) fileInput.value = ''; 
+                    
+                } catch (error) {
+                    console.error("Error adding product:", error);
+                    state.errorMessage = "Failed to add product to database. (Tip: If image was uploaded, ensure Base64 string does not exceed document limits).";
+                }
+            } else {
+                state.errorMessage = "Please enter valid values for all fields (Name, Price, Stock, Condition).";
+            }
+
+            state.loading = false;
+            renderApp();
+        };
+
+        /**
+         * Deletes a product by ID.
+         * @param {string} productId 
+         */
+        window.deleteProduct = async function(productId) {
+            if (!state.isStaff || state.loading) return;
+            clearMessages();
+            state.loading = true;
+            renderApp();
+
+             // Public data path: artifacts/{appId}/public/data/products
+            const productDocRef = doc(db, `artifacts/${appId}/public/data/products`, productId);
+
+            try {
+                await deleteDoc(productDocRef);
+                state.successMessage = `Product deleted successfully.`;
+            } catch (error) {
+                console.error("Error deleting product:", error);
+                state.errorMessage = "Failed to delete product.";
+            }
+
+            state.loading = false;
+            renderApp();
+        };
+        
+        /**
+         * Adds an item to the cart, increasing quantity if it exists, or adding a new item.
+         * @param {string} productId 
+         */
+        window.handleAddToCart = function(productId) {
+            clearMessages();
+            const product = state.products.find(p => p.id === productId);
+            if (!product) return;
+
+            const cartItemIndex = state.cart.findIndex(item => item.product.id === productId);
+            
+            if (cartItemIndex > -1) {
+                // Item exists: check stock limit and increase quantity
+                if (state.cart[cartItemIndex].quantity < product.stockQuantity) {
+                    state.cart[cartItemIndex].quantity++;
+                } else {
+                    state.errorMessage = `Cannot add more. Max stock quantity (${product.stockQuantity}) reached for ${product.name}.`;
+                    renderApp();
+                    return;
+                }
+            } else {
+                // New item: add with quantity 1
+                state.cart.push({ product, quantity: 1 });
+            }
+
+            saveCartToFirestore();
+            renderApp();
+        };
+
+        /**
+         * Removes one unit of an item from the cart. If quantity hits 0, the item is removed.
+         * @param {string} productId 
+         */
+        window.handleRemoveFromCart = function(productId) {
+            clearMessages();
+            const cartItemIndex = state.cart.findIndex(item => item.product.id === productId);
+            
+            if (cartItemIndex > -1) {
+                if (state.cart[cartItemIndex].quantity > 1) {
+                    // Decrease quantity
+                    state.cart[cartItemIndex].quantity--;
+                } else {
+                    // Remove item if quantity is 1
+                    state.cart.splice(cartItemIndex, 1);
+                }
+            }
+
+            saveCartToFirestore();
+            renderApp();
+        };
+        
+        /**
+         * Toggles the staff custom discount switch.
+         * @param {Event} e 
+         */
+        window.handleCustomDiscountToggle = function(e) {
+            state.customDiscountEnabled = e.target.checked;
+            clearMessages();
+            renderApp();
+        };
+
+        /**
+         * Updates the custom discount amount input.
+         * @param {Event} e 
+         */
+        window.handleCustomDiscountChange = function(e) {
+            const amount = safeParseFloat(e.target.value);
+            state.customDiscountAmount = amount !== null && amount >= 0 ? amount : 0.00;
+            clearMessages();
+            renderApp();
+        };
+
+        /**
+         * Handles the checkout form submission.
+         * @param {Event} e 
+         */
+        window.handleCheckoutSubmit = function(e) {
+            e.preventDefault();
+            clearMessages();
+            
+            if (state.cart.length === 0) {
+                state.errorMessage = "Your cart is empty and cannot be checked out.";
+                renderApp();
+                return;
+            }
+
+            const form = e.target;
+            const fullName = form.fullName.value.trim();
+            const email = form.email.value.trim();
+            
+            // Calculate final total with custom/conditional logic
+            const subtotal = calculateCartSubtotal();
+            const { finalTotal, discountApplied, ruleDescription } = calculateDiscountedTotal(subtotal);
+            const total = formatCurrency(finalTotal);
+
+            if (!fullName || !email) {
+                state.errorMessage = "Please enter your full name and email address.";
+                renderApp();
+                return;
+            }
+            
+            const orderDetails = {
+                fullName: fullName,
+                email: email,
+                paymentMethod: "Cash only",
+                items: state.cart.map(item => ({
+                    id: item.product.id,
+                    name: item.product.name,
+                    price: item.product.price,
+                    quantity: item.quantity,
+                    condition: item.product.condition,
+                })),
+                subtotal: formatCurrency(subtotal),
+                discountApplied: formatCurrency(discountApplied),
+                discountRule: ruleDescription,
+                totalAmount: total, // This is the formatted final total
+                dateSubmitted: new Date().toISOString(),
+                userId: state.userId
+            };
+
+            // Call the transaction function to process the order and update stock
+            processOrderTransaction(
+                orderDetails.fullName, 
+                orderDetails.email, 
+                orderDetails.totalAmount, 
+                orderDetails.items,
+                orderDetails.subtotal,
+                orderDetails.discountApplied,
+                orderDetails.discountRule,
+                orderDetails.userId
+            );
+        };
+
+        // --- Main App Renderer ---
+
+        function renderApp() {
+            const appDiv = document.getElementById('app');
+            
+            let contentHTML = renderHeader();
+            
+            // 2. Render Messages in a fixed container
+            contentHTML += `
+                <div class="fixed top-16 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-20 pt-4">
+                    ${renderMessages()}
+                </div>
+            `;
+
+            // 3. Render Main Content based on view
+            if (state.currentView === 'staff-login') {
+                contentHTML += renderStaffLogin();
+            } else if (state.currentView === 'staff-panel' && state.isStaff) {
+                contentHTML += renderStaffPanel();
+            } else if (state.currentView === 'checkout') {
+                contentHTML += renderCheckoutForm();
+            } else if (state.currentView === 'order-success') {
+                contentHTML += renderOrderSuccess();
+            } else {
+                contentHTML += renderPublicDeals();
+            }
+
+
+            appDiv.innerHTML = contentHTML;
+        }
+
+        // Expose functions and state to global scope for inline event handlers
+        window.state = state;
+        window.renderApp = renderApp;
+        window.handleStaffLogin = handleStaffLogin;
+        window.handleStaffLogout = handleStaffLogout;
+        window.handleProductAdd = handleProductAdd;
+        window.deleteProduct = deleteProduct;
+        window.handleAddToCart = handleAddToCart;
+        window.handleRemoveFromCart = handleRemoveFromCart;
+        window.handleCheckoutSubmit = handleCheckoutSubmit;
+        window.handleCustomDiscountToggle = handleCustomDiscountToggle;
+        window.handleCustomDiscountChange = handleCustomDiscountChange;
+        window.handleImageChange = handleImageChange;
+        window.updateHolidayBanner = updateHolidayBanner; // Expose new function
+        window.handleHolidayDealChange = handleHolidayDealChange; // Expose new function
+        window.clearMessages = clearMessages;
+
+
+        // Start the application
+        initializeAuth();
+    </script>
 </body>
 </html>
