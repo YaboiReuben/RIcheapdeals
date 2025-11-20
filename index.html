@@ -847,7 +847,7 @@
 
                             <!-- UPDATED: File Upload and Preview -->
                             <div class="md:col-span-2 space-y-2">
-                                <label for="productImageFile" class="block text-sm font-medium text-gray-700">Product Image (Max 700KB)</label>
+                                <label for="productImageFile" class="block text-sm font-medium text-gray-700">Product Image (Max 1MB)</label>
                                 <input type="file" id="productImageFile" name="imageFile" accept="image/*" onchange="window.handleImageChange(event)" class="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
                                 <!-- Image Preview -->
                                 ${state.newProductImageBase64 ? 
@@ -1091,11 +1091,11 @@
                 return;
             }
 
-            // Maximum size is about 700KB to ensure Base64 string stays well under the 1MB Firestore limit
-            const MAX_FILE_SIZE_BYTES = 700 * 1024; 
+            // --- MODIFIED: Increased max file size to 1MB (1024KB) ---
+            const MAX_FILE_SIZE_BYTES = 1024 * 1024; 
 
             if (file.size > MAX_FILE_SIZE_BYTES) {
-                state.errorMessage = `Image too large. Max file size is ${Math.floor(MAX_FILE_SIZE_BYTES / 1024)}KB.`;
+                state.errorMessage = `Image too large. Max file size is 1MB.`;
                 e.target.value = ''; // Clear file input
                 renderApp();
                 return;
@@ -1480,8 +1480,8 @@
         window.handleCustomDiscountToggle = handleCustomDiscountToggle;
         window.handleCustomDiscountChange = handleCustomDiscountChange;
         window.handleImageChange = handleImageChange;
-        window.updateHolidayBanner = updateHolidayBanner; // Expose new function
-        window.handleHolidayDealChange = handleHolidayDealChange; // Expose new function
+        window.updateHolidayBanner = updateHolidayBanner;
+        window.handleHolidayDealChange = handleHolidayDealChange;
         window.clearMessages = clearMessages;
 
 
